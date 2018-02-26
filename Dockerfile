@@ -37,6 +37,7 @@ RUN chown -R proxy:proxy /var/lib/ssl_db
 
 # Prepare configs and executable
 ADD squid.conf /etc/squid3/squid.conf
+ADD passwords /etc/squid3/passwords
 ADD openssl.cnf /etc/squid3/openssl.cnf
 ADD mk-certs /usr/local/bin/mk-certs
 ADD run /usr/local/bin/run
