@@ -2,23 +2,19 @@
 
 set -e
 
-HOST=$(hostname -A | tr -d ' ')
-
-sed -i "s|<HOST>|${HOST}|g" /etc/squid3/openssl.cnf
-sed -i "s|<HOST>|${HOST}|g" /etc/squid3/squid.conf
-
 mkdir -p /etc/squid3/certs
 
-if ! [ -f "/etc/squid3/certs/${HOST}.crt" ]; then
-  /usr/local/bin/mk-certs
+if [[ -n "$GENERATE_CERTS" ]]; then
+	HOST=$(hostname -A | tr -d ' ')
+	if ! [ -f "/etc/squid3/certs/${HOST}.crt" ]; then
+		sed -i "s|<HOST>|${HOST}|g" /etc/squid3/openssl.cnf
+		sed -i "s|<HOST>|${HOST}|g" /etc/squid3/squid.conf
+	  /usr/local/bin/mk-certs
+	  cat "/etc/squid3/certs/${HOST}.crt"
+	fi
 fi
 
 chown -R proxy: /etc/squid3/certs
-
-cat "/etc/squid3/certs/${HOST}.crt"
-
-# /usr/sbin/squid3 -Nz
-
 chown -R proxy: /var/cache/squid3
 chown -R proxy: /var/log/squid3
 
